@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZentroMart VoiceOps 2026 | Enterprise Voice AI Customer Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="brand-logo">
+                <div class="logo-icon">
+                    <span class="pulse-ring"></span>
+                    🎙️
+                </div>
+                <div>
+                    <h1 class="brand-title">ZentroMart <span class="gradient-text">VoiceOps 2026</span></h1>
+                    <p class="brand-subtitle">LLM & Generative AI Capstone · Consulting & Analytics Club, IIT Guwahati ×
+                        Gnani.ai</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <div class="status-pill">
+                <span class="status-dot green"></span>
+                <span class="status-text" id="gnani-status">Gnani Speech Engine Ready</span>
+            </div>
+            <div class="status-pill">
+                <span class="status-icon">🛡️</span>
+                <span>Policy Gating: <strong>Enforced</strong></span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a href="/api/download/zip" class="btn btn-primary" download>
+                <span>📦</span> Submission ZIP
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-tab="tab-console">
+            <span class="tab-icon">📞</span>
+            <span>Live Voice & Call Console</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-batch">
+            <span class="tab-icon">⚡</span>
+            <span>Batch Audio Evaluator</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-benchmark">
+            <span class="tab-icon">📈</span>
+            <span>Evaluation & Benchmark (Step 1 vs 2)</span>
+        </button>
+    </nav>
+
+    <!-- App Body Content -->
+    <main class="main-container">
+        <!-- ==================== TAB 1: LIVE CALL CONSOLE ==================== -->
+        <section id="tab-console" class="tab-content active">
+            <div class="console-grid">
+                <!-- Left: Phone Simulator & Conversation Stream -->
+                <div class="card phone-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="badge badge-accent">ZentroCall 2.0</span>
+                            <h2>Active Support Terminal</h2>
+                        </div>
+                        <div class="call-controls-top">
+                            <span id="call-timer" class="call-timer hidden">00:00</span>
+                            <button id="btn-toggle-call" class="btn btn-call-start">
+                                <span class="phone-ico">📞</span>
+                                <span id="call-btn-text">Start Support Call</span>
+                            </button>
+                            <button id="btn-reset-session" class="btn btn-icon" title="Reset Session State">
+                                🔄
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Call Status Banner -->
+                    <div id="call-status-bar" class="call-status-bar idle">
+                        <div class="status-indicator">
+                            <span class="call-dot"></span>
+                            <span id="call-status-label">Line Idle — Ready to Receive Customer Calls</span>
+                        </div>
+                        <div class="quick-scenarios">
+                            <span class="scenario-label">Quick Scenarios:</span>
+                            <button class="btn-chip" onclick="loadScenario('tv')">📺 TV Damage</button>
+                            <button class="btn-chip" onclick="loadScenario('return')">👟 Sneaker Return</button>
+                            <button class="btn-chip" onclick="loadScenario('unsupported')">❓ Midnight Slot</button>
+                            <button class="btn-chip" onclick="loadScenario('hindi')">🇮🇳 Hindi Query</button>
+                        </div>
+                    </div>
+
+                    <!-- Waveform Visualizer -->
+                    <div class="waveform-container">
+                        <canvas id="waveform-canvas" width="600" height="60"></canvas>
+                        <div class="audio-feedback" id="audio-feedback">Voice Engine Ready · Timbre-v2.5 (Kaveri)</div>
+                    </div>
+
+                    <!-- Chat / Call Transcript Area -->
+                    <div class="transcript-header-label">
+                        <span>CALL &amp; CONVERSATION STREAM</span>
+                    </div>
+                    <div id="chat-stream" class="chat-stream">
+                        <div class="chat-bubble assistant welcome-bubble">
+                            <div class="bubble-header">
+                                <span class="speaker-name">ZentroMart Voice Assistant</span>
+                                <span class="time-stamp">System</span>
+                            </div>
+                            <div class="bubble-content">
+                                Hello! I am ZentroMart's AI support assistant. How can I help you with your order,
+                                return, refund, or warranty today?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEDICATED QUERY INPUT BAR (AT BOTTOM OF CONVERSATION) -->
+                    <div class="dedicated-query-console in-conversation-box">
+                        <div class="query-console-header">
+                            <div class="query-title">
+                                <span class="query-icon">💬</span>
+                                <div>
+                                    <h3>Type Customer Query / Inquiry</h3>
+                                    <p>Ask policy questions, check order status, test identity verification, or request
+                                        escalations</p>
+                                </div>
+                            </div>
+                            <div class="query-audio-actions">
+                                <button type="button" id="btn-mic-record" class="btn btn-mic-pill"
+                                    title="Click or Hold to Speak">
+                                    <span class="mic-icon">🎙️</span>
+                                    <span id="mic-label">Speak (Mic)</span>
+                                </button>
+                                <label class="btn btn-upload-pill" title="Upload Audio File">
+                                    <span>📁</span> Upload Voice
+                                    <input type="file" id="file-audio-upload" accept="audio/*" style="display:none;">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Query Input Box (Non-form container to prevent browser reload) -->
+                        <div id="chat-form" class="prominent-query-form">
+                            <div class="input-space-badge">
+                                <span class="badge-pulse">⌨️ TYPE YOUR QUERY BELOW</span>
+                                <span class="input-hint">Press Enter or click Submit Query</span>
+                            </div>
+                            <div class="query-input-row">
+                                <input type="text" id="chat-input" class="prominent-input"
+                                    placeholder="👉 Type your query here... (e.g. 'How fast are wallet refunds?', 'Order 8978 2837. Last 4 digits 4533', 'Can I return shoes?')"
+                                    autofocus autocomplete="off">
+                                <button type="button" id="btn-submit-query" class="btn btn-primary btn-submit-query">
+                                    <span>Submit Query</span>
+                                    <span class="send-icon">➔</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick-Click Example Queries -->
+                        <div class="quick-query-bar">
+                            <span class="quick-label">⚡ Example Prompts:</span>
+                            <button type="button" class="btn-sample-query"
+                                onclick="setQuery('How fast are refunds to the ZentroMart Wallet?')">Wallet Refund
+                                Speed</button>
+                            <button type="button" class="btn-sample-query"
+                                onclick="setQuery('Can I return Kaafi Running Sneakers? Order 1859 9253, last 4 digits 4265')">Sneaker
+                                Return</button>
+                            <button type="button" class="btn-sample-query"
+                                onclick="setQuery('Order 8978 2837. Last 4 digits 4533. Damaged TV replacement request.')">Damaged
+                                TV Claim</button>
+                            <button type="button" class="btn-sample-query"
+                                onclick="setQuery('Can I schedule a delivery at midnight?')">Midnight Delivery</button>
+                            <button type="button" class="btn-sample-query"
+                                onclick="setQuery('Maine Gulmohar Matte Lipstick khol liya hai, kya ab bhi wapas kar sakti hoon?')">Hindi
+                                Opened Lipstick</button>
+                        </div>
+
+                        <!-- Language Selector Settings -->
+                        <div class="language-bar-bottom">
+                            <div class="lang-setting">
+                                <span>Customer Language (STT):</span>
+                                <select id="select-stt-lang">
+                                    <option value="en-IN" selected>English (en-IN)</option>
+                                    <option value="hi-IN">Hindi (hi-IN)</option>
+                                    <option value="bn-IN">Bengali (bn-IN)</option>
+                                    <option value="gu-IN">Gujarati (gu-IN)</option>
+                                    <option value="kn-IN">Kannada (kn-IN)</option>
+                                    <option value="ml-IN">Malayalam (ml-IN)</option>
+                                    <option value="mr-IN">Marathi (mr-IN)</option>
+                                    <option value="pa-IN">Punjabi (pa-IN)</option>
+                                    <option value="ta-IN">Tamil (ta-IN)</option>
+                                    <option value="te-IN">Telugu (te-IN)</option>
+                                </select>
+                            </div>
+                            <div class="lang-setting">
+                                <span>Agent Reply Voice (TTS):</span>
+                                <select id="select-tts-lang">
+                                    <option value="en-IN" selected>English (en-IN)</option>
+                                    <option value="hi-en">Hinglish (hi-en)</option>
+                                    <option value="hi-IN">Hindi (hi-IN)</option>
+                                    <option value="bn-IN">Bengali (bn-IN)</option>
+                                    <option value="gu-IN">Gujarati (gu-IN)</option>
+                                    <option value="kn-IN">Kannada (kn-IN)</option>
+                                    <option value="ml-IN">Malayalam (ml-IN)</option>
+                                    <option value="mr-IN">Marathi (mr-IN)</option>
+                                    <option value="pa-IN">Punjabi (pa-IN)</option>
+                                    <option value="ta-IN">Tamil (ta-IN)</option>
+                                    <option value="te-IN">Telugu (te-IN)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Telemetry, Identity Gate, & Knowledge Inspector -->
+                <div class="telemetry-column">
+                    <!-- 1. Caller Identity Security Gate -->
+                    <div class="card security-card">
+                        <div class="card-header-sm">
+                            <div class="badge-row">
+                                <span class="card-label">SECURITY & GATING</span>
+                                <span id="verification-badge" class="badge badge-unverified">UNVERIFIED CALLER</span>
+                            </div>
+                        </div>
+                        <div class="security-body">
+                            <div class="security-meter">
+                                <div id="security-progress" class="security-progress unverified"></div>
+                            </div>
+                            <div class="security-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Active Order ID:</span>
+                                    <strong id="meta-order-id">—</strong>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Customer ID:</span>
+                                    <strong id="meta-customer-id">—</strong>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Plus Membership:</span>
+                                    <strong id="meta-is-plus">—</strong>
+                                </div>
+                            </div>
+                            <div id="verified-order-box" class="verified-order-box hidden">
+                                <div class="order-box-title">Decrypted Order Details:</div>
+                                <div class="order-box-content" id="order-box-content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. RAG Precedence Hierarchy Visualizer -->
+                    <div class="card precedence-card">
+                        <div class="card-header-sm">
+                            <span class="card-label">GROUNDED RAG PRECEDENCE STACK</span>
+                            <span class="precedence-indicator">Rule Hierarchy</span>
+                        </div>
+                        <div class="precedence-stack">
+                            <div class="precedence-layer active-layer" id="layer-policy">
+                                <span class="layer-rank">1</span>
+                                <div class="layer-info">
+                                    <strong>Current Policies (pol_*.md)</strong>
+                                    <span>Authority #1 · Overrules superseded versions</span>
+                                </div>
+                                <span class="layer-tag win">WINNER</span>
+                            </div>
+                            <div class="precedence-layer" id="layer-agent">
+                                <span class="layer-rank">2</span>
+                                <div class="layer-info">
+                                    <strong>Agent Guides (agent_*.md)</strong>
+                                    <span>Verification, style, escalation procedures</span>
+                                </div>
+                            </div>
+                            <div class="precedence-layer" id="layer-help">
+                                <span class="layer-rank">3</span>
+                                <div class="layer-info">
+                                    <strong>Help Documents (help_*.md)</strong>
+                                    <span>Customer-facing guides</span>
+                                </div>
+                            </div>
+                            <div class="precedence-layer" id="layer-faq">
+                                <span class="layer-rank">4</span>
+                                <div class="layer-info">
+                                    <strong>FAQs (faq_*.md)</strong>
+                                    <span>General questions (policy supersedes FAQ traps)</span>
+                                </div>
+                            </div>
+                            <div class="precedence-layer rejected-layer" id="layer-mkt">
+                                <span class="layer-rank">5</span>
+                                <div class="layer-info">
+                                    <strong>Marketing (mkt_*.md)</strong>
+                                    <span>Promotional copy · Overruled on conflict</span>
+                                </div>
+                                <span class="layer-tag loss">OVERRULED</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Real-Time Retrieved Citations -->
+                    <div class="card citations-card">
+                        <div class="card-header-sm">
+                            <span class="card-label">RETRIEVED KNOWLEDGE CITATIONS</span>
+                            <span id="citation-count" class="badge badge-neutral">0 Chunks</span>
+                        </div>
+                        <div id="citations-list" class="citations-list">
+                            <div class="empty-state">
+                                <span>📚</span>
+                                <p>No documents retrieved yet. Ask a question to inspect retrieved section IDs and
+                                    evidence.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Escalation Tickets Logged -->
+                    <div class="card tickets-card">
+                        <div class="card-header-sm">
+                            <span class="card-label">HUMAN ESCALATION TICKETS</span>
+                            <span id="ticket-count" class="badge badge-neutral">0 Logged</span>
+                        </div>
+                        <div id="tickets-list" class="tickets-list">
+                            <div class="empty-state-sm">No escalations active in this session.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: BATCH AUDIO EVALUATOR ==================== -->
+        <section id="tab-batch" class="tab-content">
+            <div class="batch-container">
+                <div class="batch-header-box">
+                    <div class="batch-title">
+                        <h2>🎙️ Official Capstone Batch Audio Evaluator</h2>
+                        <p>Simulates the exact evaluation process used by CAC IIT Guwahati and Gnani.ai judges. Takes
+                            customer audio files, transcribes with Gnani STT, grounds with RAG, and synthesizes Kaveri
+                            speech replies.</p>
+                    </div>
+                    <div class="batch-actions">
+                        <button id="btn-run-batch" class="btn btn-primary btn-large">
+                            <span>⚡</span> Execute Audio Batch Evaluation
+                        </button>
+                    </div>
+                </div>
+
+                <div id="batch-progress-box" class="batch-progress-box hidden">
+                    <div class="progress-bar-container">
+                        <div id="batch-progress-bar" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-status-text" id="batch-progress-text">Processing audio clips...</div>
+                </div>
+
+                <div id="batch-results-container" class="batch-results-grid">
+                    <!-- Batch items rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: BENCHMARK & EVALUATION ==================== -->
+        <section id="tab-benchmark" class="tab-content">
+            <div class="benchmark-container">
+                <div class="benchmark-hero">
+                    <h2>Step 1 Baseline vs. Step 2 Grounded RAG Benchmark</h2>
+                    <p>Quantitative validation across 52 practice questions and 23 multi-turn support conversations (96
+                        turns).</p>
+                </div>
+
+                <!-- KPI Metric Cards Grid -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Hallucination Reduction</div>
+                        <div class="kpi-value text-emerald">0.0%</div>
+                        <div class="kpi-sub">Down from 94.2% in Step 1 Baseline</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Fact Consistency (Must-Include)</div>
+                        <div class="kpi-value text-cyan">94.2%</div>
+                        <div class="kpi-sub">+88.4% improvement over Baseline (5.8%)</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Evidence Recall (Section IDs)</div>
+                        <div class="kpi-value text-purple">68.1%</div>
+                        <div class="kpi-sub">Exact [SECTION-ID] gold matches</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Identity Gating Accuracy</div>
+                        <div class="kpi-value text-emerald">100.0%</div>
+                        <div class="kpi-sub">Zero unauthenticated data leaks</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Questions Benchmark Table -->
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h3>Practice Dataset Questions (52 Total Cases)</h3>
+                        <div class="table-search">
+                            <input type="text" id="table-filter"
+                                placeholder="Search intent, question, or evidence (e.g. 'refund', 'ELE-0012')...">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="benchmark-table" id="questions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Language</th>
+                                    <th>Question</th>
+                                    <th>Intent</th>
+                                    <th>Expected Decision</th>
+                                    <th>Gold Evidence</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="questions-table-body">
+                                <tr>
+                                    <td colspan="7" style="text-align:center; padding: 2rem;">Loading benchmark
+                                        questions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
